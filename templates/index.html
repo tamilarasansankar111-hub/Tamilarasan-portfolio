@@ -1,0 +1,260 @@
+{% extends "base.html" %}
+
+{% block title %}
+{% if page == 'home' %}Tamilarasan S — {{ profile.hero_role or 'IT Student | Full Stack & AI-Driven Web Developer' }}
+{% elif page == 'about' %}About — Tamilarasan S
+{% elif page == 'skills' %}Skills — Tamilarasan S
+{% elif page == 'education' %}Education — Tamilarasan S
+{% elif page == 'projects' %}Projects — Tamilarasan S
+{% elif page == 'certifications' %}Certifications — Tamilarasan S
+{% elif page == 'contact' %}Contact — Tamilarasan S
+{% else %}Tamilarasan S — Portfolio
+{% endif %}
+{% endblock %}
+
+{% block content %}
+
+{% if page == 'home' %}
+<section class="hero" id="home">
+  <div class="container hero-grid">
+    <div class="reveal in">
+      <div class="eyebrow">PORTFOLIO / NAMAKKAL, INDIA</div>
+      <h1>{{ profile.hero_title or 'Tamilarasan S' }}<br><span class="accent">builds with code &amp; curiosity.</span></h1>
+      <div class="hero-title">{{ profile.hero_role or 'IT Student | Full Stack & AI-Driven Web Developer' }}</div>
+      <div class="terminal">
+        <span class="prompt">&gt;</span>
+        <span id="typed" data-phrase1="{{ profile.hero_tagline or 'Building things with Python, HTML, CSS & curiosity_' }}"></span>
+      </div>
+      <div class="hero-ctas">
+        <a href="{{ url_for('portfolio.download_resume') }}" class="btn btn-primary"><i class="fa-solid fa-download"></i> Download Resume</a>
+        <a href="{{ url_for('portfolio.contact') }}" class="btn btn-outline"><i class="fa-solid fa-paper-plane"></i> Contact Me</a>
+      </div>
+    </div>
+    <div class="hero-photo-wrap reveal in">
+      <div class="photo-ring"></div>
+      <div class="photo-card">
+        <img id="profilePhoto" src="{{ profile.photo_url or url_for('static', filename='images/profile/default_profile.jpeg') }}" alt="Tamilarasan S">
+      </div>
+      <div class="floating-badge badge-1"><i class="fa-brands fa-python"></i> Python Dev</div>
+      <div class="floating-badge badge-2"><i class="fa-solid fa-pen-ruler"></i> UI/UX</div>
+    </div>
+  </div>
+  <div class="scroll-cue"><span>EXPLORE</span><span class="line"></span></div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow">QUICK LINKS</div>
+      <h2>Explore my portfolio</h2>
+      <p>Jump straight to what you're interested in.</p>
+    </div>
+    <div class="home-links-row">
+      <a href="{{ url_for('portfolio.about') }}" class="mini-nav-card reveal"><i class="fa-solid fa-user"></i><span>About Me</span></a>
+      <a href="{{ url_for('portfolio.skills') }}" class="mini-nav-card reveal"><i class="fa-solid fa-code"></i><span>Skills</span></a>
+      <a href="{{ url_for('portfolio.education') }}" class="mini-nav-card reveal"><i class="fa-solid fa-graduation-cap"></i><span>Education</span></a>
+      <a href="{{ url_for('portfolio.projects') }}" class="mini-nav-card reveal"><i class="fa-solid fa-diagram-project"></i><span>Projects</span></a>
+      <a href="{{ url_for('portfolio.certifications') }}" class="mini-nav-card reveal"><i class="fa-solid fa-certificate"></i><span>Certifications</span></a>
+      <a href="{{ url_for('portfolio.contact') }}" class="mini-nav-card reveal"><i class="fa-solid fa-envelope"></i><span>Contact</span></a>
+    </div>
+  </div>
+</section>
+
+{% elif page == 'about' %}
+<section class="page-header">
+  <div class="container">
+    <div class="eyebrow">01 / ABOUT</div>
+    <h1>A little about me</h1>
+    <p>Who I am, what drives me, and where I'm headed.</p>
+  </div>
+</section>
+<section>
+  <div class="container">
+    <div class="about-wrap">
+      <div class="reveal">
+        <p>{{ profile.about_summary }}</p>
+        <p>I'm a strong team player with a genuine interest in learning modern technologies and building impactful solutions — currently pursuing my Bachelor of Technology in Information Technology at Muthayammal Engineering College.</p>
+        <p><strong>Career objective:</strong> {{ profile.career_objective }}</p>
+      </div>
+      <div class="about-card reveal">
+        <h3><i class="fa-solid fa-id-card"></i> Quick Info</h3>
+        <div class="info-row"><span>Name</span><span>{{ profile.hero_title or 'Tamilarasan S' }}</span></div>
+        <div class="info-row"><span>Location</span><span>Namakkal, India</span></div>
+        <div class="info-row"><span>Degree</span><span>B.Tech (IT) — Pursuing</span></div>
+        <div class="info-row"><span>CGPA</span><span>7.45</span></div>
+        <div class="info-row"><span>Email</span><span>tamilarasansankar111@gmail.com</span></div>
+        <div class="info-row"><span>Phone</span><span>+91 93612 40214</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% elif page == 'skills' %}
+<section class="page-header">
+  <div class="container">
+    <div class="eyebrow">02 / SKILLS</div>
+    <h1>What I work with</h1>
+    <p>A snapshot of the languages, tools and soft skills I bring to a team.</p>
+  </div>
+</section>
+<section>
+  <div class="container">
+    <div class="skills-grid">
+      <div class="reveal">
+        {% for category, items in technical_categories.items() %}
+        <div class="skill-group">
+          <h3>{{ category }}</h3>
+          {% for s in items %}
+          <div class="skill-item">
+            <div class="skill-item-top"><span>{{ s.name }}</span></div>
+            <div class="skill-bar"><span data-width="{{ s.level or 0 }}%"></span></div>
+          </div>
+          {% endfor %}
+        </div>
+        {% endfor %}
+      </div>
+      <div class="reveal">
+        <h3 class="mono" style="font-size:.95rem;color:var(--ink-soft);margin-bottom:18px;letter-spacing:.5px;text-transform:uppercase;">Soft Skills</h3>
+        <div class="soft-badges">
+          {% for s in soft_skills %}
+          <div class="soft-badge"><i class="{{ s.icon or 'fa-solid fa-star' }}"></i> {{ s.name }}</div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% elif page == 'education' %}
+<section class="page-header">
+  <div class="container">
+    <div class="eyebrow">03 / EDUCATION</div>
+    <h1>Academic timeline</h1>
+    <p>My educational journey so far.</p>
+  </div>
+</section>
+<section>
+  <div class="container">
+    <div class="timeline">
+      {% for edu in education_items %}
+      <div class="tl-item reveal">
+        <div class="tl-dot"></div>
+        <div class="tl-card">
+          <span class="tl-year">{{ edu.year_label }}</span>
+          <h3>{{ edu.degree }}</h3>
+          <div class="inst">{{ edu.institution }}</div>
+          <div class="tl-meta"><span class="tl-tag">{{ edu.score_label }}</span></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% elif page == 'projects' %}
+<section class="page-header">
+  <div class="container">
+    <div class="eyebrow">04 / PROJECTS</div>
+    <h1>Things I've built</h1>
+    <p>Selected academic and hackathon projects.</p>
+  </div>
+</section>
+<section>
+  <div class="container">
+    <div class="projects-grid">
+      {% for p in projects %}
+      <div class="project-card reveal">
+        {% if p.image_url %}<img src="{{ p.image_url }}" alt="{{ p.title }}" style="width:100%;border-radius:12px;margin-bottom:16px;">{% endif %}
+        <span class="project-tag">{{ p.tag }}</span>
+        <h3>{{ p.title }}</h3>
+        <p>{{ p.description }}</p>
+        {% if p.github_link or p.demo_link %}
+        <div class="project-links">
+          {% if p.github_link %}<a href="{{ p.github_link }}" target="_blank" class="btn btn-outline btn-sm"><i class="fa-brands fa-github"></i> Code</a>{% endif %}
+          {% if p.demo_link %}<a href="{{ p.demo_link }}" target="_blank" class="btn btn-outline btn-sm"><i class="fa-solid fa-arrow-up-right-from-square"></i> Live Demo</a>{% endif %}
+        </div>
+        {% else %}
+        <span class="no-link-note"><i class="fa-solid fa-lock"></i> Repository not public</span>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% elif page == 'certifications' %}
+<section class="page-header">
+  <div class="container">
+    <div class="eyebrow">05 / CERTIFICATIONS &amp; EXPERIENCE</div>
+    <h1>Certifications, internships &amp; achievements</h1>
+    <p>Credentials and experience earned outside the classroom.</p>
+  </div>
+</section>
+<section>
+  <div class="container">
+    <div class="cert-grid">
+      {% for c in certifications %}
+      <div class="cert-card reveal">
+        {% if c.image_url %}<img src="{{ c.image_url }}" alt="{{ c.title }}" style="width:100%;border-radius:10px;margin-bottom:14px;">{% endif %}
+        <div class="cert-icon"><i class="{{ c.icon or 'fa-solid fa-certificate' }}"></i></div>
+        <h3>{{ c.title }}</h3>
+        <p>{{ c.description }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% elif page == 'contact' %}
+<section class="page-header">
+  <div class="container">
+    <div class="eyebrow">06 / CONTACT</div>
+    <h1>Let's build something together</h1>
+    <p>Open to internships, campus placements and full stack development roles.</p>
+  </div>
+</section>
+<section>
+  <div class="container">
+    <div class="contact-wrap">
+      <div class="contact-info-card reveal">
+        <div class="contact-line">
+          <div class="contact-icon"><i class="fa-solid fa-envelope"></i></div>
+          <div><div class="label">Email</div><div class="value">{{ contact_info.email }}</div></div>
+        </div>
+        <div class="contact-line">
+          <div class="contact-icon"><i class="fa-solid fa-phone"></i></div>
+          <div><div class="label">Phone</div><div class="value">{{ contact_info.phone }}</div></div>
+        </div>
+        {% for link in social_links %}
+        <div class="contact-line">
+          <div class="contact-icon"><i class="{{ link.icon }}"></i></div>
+          <div><div class="label">{{ link.platform }}</div><div class="value">{{ link.url }}</div></div>
+        </div>
+        {% endfor %}
+        <div class="contact-line">
+          <div class="contact-icon"><i class="fa-solid fa-location-dot"></i></div>
+          <div><div class="label">Location</div><div class="value">{{ contact_info.location }}</div></div>
+        </div>
+      </div>
+      <form class="contact-form reveal" id="contactForm" data-to-email="{{ contact_info.email }}">
+        <div class="form-group">
+          <label for="name">Your Name</label>
+          <input type="text" id="name" placeholder="Enter your name" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Your Email</label>
+          <input type="email" id="email" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" placeholder="Tell me about the opportunity..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;"><i class="fa-solid fa-paper-plane"></i> Send Message</button>
+        <div class="form-note">Submitting opens your email app addressed to {{ contact_info.email }}</div>
+      </form>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard — Tamilarasan S{% endblock %}
+
+{% block header %}
+<header>
+  <nav>
+    <a href="{{ url_for('portfolio.home') }}" class="logo">TS<span>.</span></a>
+    <div class="nav-actions" style="gap:14px;">
+      <a href="{{ url_for('portfolio.home') }}" class="btn btn-outline btn-sm"><i class="fa-solid fa-eye"></i> View Site</a>
+      <a href="{{ url_for('auth.logout') }}" class="btn btn-outline btn-sm"><i class="fa-solid fa-right-from-bracket"></i> Log Out</a>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode"><i class="fa-solid fa-moon"></i></button>
+    </div>
+  </nav>
+</header>
+{% endblock %}
+
+{% block content %}
+<section class="admin-shell">
+  <div class="container">
+    <div class="admin-shell-head">
+      <div>
+        <h1>Edit Portfolio</h1>
+        <div class="sub">Every change here saves to Supabase and appears live on your site.</div>
+      </div>
+    </div>
+
+    <div class="admin-tabs">
+      <button class="admin-tab-btn active" data-tab="tab-profile">Profile / Hero</button>
+      <button class="admin-tab-btn" data-tab="tab-contact">Contact &amp; Social</button>
+      <button class="admin-tab-btn" data-tab="tab-skills">Skills</button>
+      <button class="admin-tab-btn" data-tab="tab-projects">Projects</button>
+      <button class="admin-tab-btn" data-tab="tab-certs">Certifications</button>
+    </div>
+
+    <!-- ================= PROFILE / HERO / ABOUT / PHOTO / RESUME ================= -->
+    <div class="admin-tab-panel active" id="tab-profile">
+      <div class="admin-card">
+        <h3><i class="fa-solid fa-image"></i> Profile Photo</h3>
+        <img id="currentPhotoPreview" class="current-photo-preview" src="{{ profile.photo_url or url_for('static', filename='images/profile/default_profile.jpeg') }}" alt="Current photo">
+        <div class="admin-error-box" id="photoMsg"></div>
+        <form id="photoForm" class="small-file-form">
+          <input type="file" id="photoFile" accept="image/*" required>
+          <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-upload"></i> Upload</button>
+        </form>
+      </div>
+
+      <div class="admin-card">
+        <h3><i class="fa-solid fa-file-pdf"></i> Resume</h3>
+        <p class="sub" style="margin-bottom:14px;">Current: <a href="{{ url_for('portfolio.download_resume') }}" target="_blank">view current resume</a></p>
+        <div class="admin-error-box" id="resumeMsg"></div>
+        <form id="resumeForm" class="small-file-form">
+          <input type="file" id="resumeFile" accept="application/pdf" required>
+          <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-upload"></i> Upload</button>
+        </form>
+      </div>
+
+      <div class="admin-card">
+        <h3><i class="fa-solid fa-pen"></i> Hero &amp; About Content</h3>
+        <div class="admin-error-box" id="profileMsg"></div>
+        <form id="profileForm">
+          <div class="admin-field">
+            <label>Full Name (Hero Title)</label>
+            <input type="text" id="heroTitle" value="{{ profile.hero_title or '' }}">
+          </div>
+          <div class="admin-field">
+            <label>Professional Title / Role</label>
+            <input type="text" id="heroRole" value="{{ profile.hero_role or '' }}">
+          </div>
+          <div class="admin-field">
+            <label>Hero Tagline (typing effect text)</label>
+            <input type="text" id="heroTagline" value="{{ profile.hero_tagline or '' }}">
+          </div>
+          <div class="admin-field">
+            <label>About — Professional Summary</label>
+            <textarea id="aboutSummary" rows="4">{{ profile.about_summary or '' }}</textarea>
+          </div>
+          <div class="admin-field">
+            <label>Career Objective</label>
+            <textarea id="careerObjective" rows="3">{{ profile.career_objective or '' }}</textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-check"></i> Save Changes</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ================= CONTACT & SOCIAL ================= -->
+    <div class="admin-tab-panel" id="tab-contact">
+      <div class="admin-card">
+        <h3><i class="fa-solid fa-address-book"></i> Contact Information</h3>
+        <div class="admin-error-box" id="contactInfoMsg"></div>
+        <form id="contactInfoForm">
+          <div class="admin-field"><label>Email</label><input type="email" id="contactEmail" value="{{ contact_info.email or '' }}"></div>
+          <div class="admin-field"><label>Phone</label><input type="text" id="contactPhone" value="{{ contact_info.phone or '' }}"></div>
+          <div class="admin-field"><label>Location</label><input type="text" id="contactLocation" value="{{ contact_info.location or '' }}"></div>
+          <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-check"></i> Save</button>
+        </form>
+      </div>
+
+      <div class="admin-card">
+        <h3><i class="fa-solid fa-share-nodes"></i> Social Links</h3>
+        <div class="admin-error-box" id="socialMsg"></div>
+        {% for link in social_links %}
+        <div class="admin-list-row">
+          <div class="row-main"><strong>{{ link.platform }}</strong><span>{{ link.url }}</span></div>
+          <div class="row-actions"><button class="delete-social-btn" data-id="{{ link.id }}"><i class="fa-solid fa-trash"></i></button></div>
+        </div>
+        {% endfor %}
+        <form id="addSocialForm" style="margin-top:16px;">
+          <div class="admin-field"><label>Platform</label><input type="text" id="socialPlatform" placeholder="e.g. LinkedIn" required></div>
+          <div class="admin-field"><label>URL</label><input type="text" id="socialUrl" placeholder="https://..." required></div>
+          <div class="admin-field"><label>Icon class</label><input type="text" id="socialIcon" placeholder="e.g. fa-brands fa-linkedin-in" required></div>
+          <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i> Add Link</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ================= SKILLS ================= -->
+    <div class="admin-tab-panel" id="tab-skills">
+      <div class="admin-card">
+        <h3><i class="fa-solid fa-code"></i> Current Skills</h3>
+        <div class="admin-error-box" id="skillMsg"></div>
+        {% for s in skills %}
+        <div class="admin-list-row">
+          <div class="row-main"><strong>{{ s.name }}</strong><span>{{ s.type }}{% if s.category %} · {{ s.category }}{% endif %}{% if s.level %} · {{ s.level }}%{% endif %}</span></div>
+          <div class="row-actions"><button class="delete-skill-btn" data-id="{{ s.id }}"><i class="fa-solid fa-trash"></i></button></div>
+        </div>
+        {% endfor %}
+        <form id="addSkillForm" style="margin-top:16px;">
+          <div class="admin-field">
+            <label>Skill Type</label>
+            <select id="newSkillType" class="admin-select">
+              <option value="technical">Technical (progress bar)</option>
+              <option value="soft">Soft Skill (badge)</option>
+            </select>
+          </div>
+          <div class="admin-field" id="skillCategoryField">
+            <label>Category (technical only)</label>
+            <input type="text" id="newSkillCategory" placeholder="e.g. Languages">
+          </div>
+          <div class="admin-field">
+            <label>Skill Name</label>
+            <input type="text" id="newSkillName" placeholder="e.g. React" required>
+          </div>
+          <div class="admin-field" id="skillLevelField">
+            <label>Proficiency: <span id="skillLevelValue">75</span>%</label>
+            <input type="range" id="newSkillLevel" min="0" max="100" value="75" style="width:100%;">
+          </div>
+          <div class="admin-field" id="skillIconField">
+            <label>Icon class (soft only, optional)</label>
+            <input type="text" id="newSkillIcon" placeholder="e.g. fa-solid fa-star">
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i> Add Skill</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ================= PROJECTS ================= -->
+    <div class="admin-tab-panel" id="tab-projects">
+      <div class="admin-card">
+        <h3><i class="fa-solid fa-diagram-project"></i> Current Projects</h3>
+        <div class="admin-error-box" id="projectMsg"></div>
+        {% for p in projects %}
+        <div class="admin-list-row" style="flex-direction:column;align-items:stretch;">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+            <div class="row-main"><strong>{{ p.title }}</strong><span>{{ p.tag }}</span></div>
+            <div class="row-actions"><button class="delete-project-btn" data-id="{{ p.id }}"><i class="fa-solid fa-trash"></i></button></div>
+          </div>
+          <form class="small-file-form project-image-form" data-id="{{ p.id }}">
+            <label style="font-size:.78rem;color:var(--ink-soft);width:100%;">Main image:</label>
+            <input type="file" accept="image/*">
+            <button type="submit" class="btn btn-outline btn-sm">Upload</button>
+          </form>
+          <form class="small-file-form project-screenshots-form" data-id="{{ p.id }}">
+            <label style="font-size:.78rem;color:var(--ink-soft);width:100%;">Screenshots (multiple):</label>
+            <input type="file" accept="image/*" multiple>
+            <button type="submit" class="btn btn-outline btn-sm">Upload</button>
+          </form>
+        </div>
+        {% endfor %}
+        <form id="addProjectForm" style="margin-top:16px;">
+          <div class="admin-field"><label>Title</label><input type="text" id="newProjTitle" required></div>
+          <div class="admin-field"><label>Tag / Type</label><input type="text" id="newProjTag" placeholder="e.g. Web Development Project"></div>
+          <div class="admin-field"><label>Description</label><textarea id="newProjDesc" required></textarea></div>
+          <div class="admin-field"><label>GitHub Link (optional)</label><input type="text" id="newProjGithub"></div>
+          <div class="admin-field"><label>Live Demo Link (optional)</label><input type="text" id="newProjDemo"></div>
+          <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i> Add Project</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ================= CERTIFICATIONS ================= -->
+    <div class="admin-tab-panel" id="tab-certs">
+      <div class="admin-card">
+        <h3><i class="fa-solid fa-certificate"></i> Current Certificates</h3>
+        <div class="admin-error-box" id="certMsg"></div>
+        {% for c in certifications %}
+        <div class="admin-list-row" style="flex-direction:column;align-items:stretch;">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+            <div class="row-main"><strong>{{ c.title }}</strong><span>{{ c.description }}</span></div>
+            <div class="row-actions"><button class="delete-cert-btn" data-id="{{ c.id }}"><i class="fa-solid fa-trash"></i></button></div>
+          </div>
+          <form class="small-file-form cert-image-form" data-id="{{ c.id }}">
+            <label style="font-size:.78rem;color:var(--ink-soft);width:100%;">Certificate image:</label>
+            <input type="file" accept="image/*">
+            <button type="submit" class="btn btn-outline btn-sm">Upload</button>
+          </form>
+        </div>
+        {% endfor %}
+        <form id="addCertForm" style="margin-top:16px;">
+          <div class="admin-field"><label>Title</label><input type="text" id="newCertTitle" required></div>
+          <div class="admin-field"><label>Description</label><input type="text" id="newCertDesc"></div>
+          <div class="admin-field"><label>Icon class (optional)</label><input type="text" id="newCertIcon" placeholder="fa-solid fa-award"></div>
+          <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i> Add Certificate</button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}
+
+{% block footer %}{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Admin Login — Tamilarasan S{% endblock %}
+
+{% block header %}
+<header>
+  <nav>
+    <a href="{{ url_for('portfolio.home') }}" class="logo">TS<span>.</span></a>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode"><i class="fa-solid fa-moon"></i></button>
+    </div>
+  </nav>
+</header>
+{% endblock %}
+
+{% block content %}
+<section style="min-height:80vh;display:flex;align-items:center;justify-content:center;padding:140px 20px 60px;">
+  <div class="modal-box" style="position:static;max-width:440px;width:100%;margin:0 auto;animation:none;">
+    <h3>Admin Login</h3>
+    <p class="sub">Sign in to manage your portfolio content.</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="admin-error show">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('auth.login') }}">
+      <div class="admin-field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required autocomplete="username">
+      </div>
+      <div class="admin-field">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Log In</button>
+    </form>
+  </div>
+</section>
+{% endblock %}
+
+{% block footer %}{% endblock %}

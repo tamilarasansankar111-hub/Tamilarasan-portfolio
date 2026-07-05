@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Server Error' if server_error else 'Page Not Found' }} — Tamilarasan S{% endblock %}
+
+{% block content %}
+<section style="min-height:70vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:140px 20px 60px;">
+  <div class="reveal in">
+    <div class="eyebrow" style="justify-content:center;">{{ '500' if server_error else '404' }}</div>
+    <h1 style="font-size:clamp(2rem,5vw,3rem);margin-bottom:14px;">
+      {{ 'Something went wrong on our end.' if server_error else "This page doesn't exist." }}
+    </h1>
+    <p style="color:var(--ink-soft);margin-bottom:28px;">
+      {{ 'Please try again in a moment.' if server_error else "Let's get you back to somewhere useful." }}
+    </p>
+    <a href="{{ url_for('portfolio.home') }}" class="btn btn-primary"><i class="fa-solid fa-house"></i> Back to Home</a>
+  </div>
+</section>
+{% endblock %}

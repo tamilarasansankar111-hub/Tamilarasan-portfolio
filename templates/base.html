@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Tamilarasan S — Portfolio{% endblock %}</title>
+<meta name="description" content="{% block description %}Portfolio of Tamilarasan S, IT student specializing in full stack and AI-driven web development.{% endblock %}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% block extra_head %}{% endblock %}
+</head>
+<body data-theme="light">
+
+<div id="loader">
+  <div class="loader-mark">TAMILARASAN_S<span class="caret"></span></div>
+  <div class="loader-bar"><span></span></div>
+</div>
+
+{% block header %}
+<header>
+  <nav>
+    <a href="{{ url_for('portfolio.home') }}" class="logo">TS<span>.</span></a>
+    <div class="nav-links">
+      <a href="{{ url_for('portfolio.about') }}" class="{{ 'active' if (page is defined and page == 'about') else '' }}">About</a>
+      <a href="{{ url_for('portfolio.skills') }}" class="{{ 'active' if (page is defined and page == 'skills') else '' }}">Skills</a>
+      <a href="{{ url_for('portfolio.education') }}" class="{{ 'active' if (page is defined and page == 'education') else '' }}">Education</a>
+      <a href="{{ url_for('portfolio.projects') }}" class="{{ 'active' if (page is defined and page == 'projects') else '' }}">Projects</a>
+      <a href="{{ url_for('portfolio.certifications') }}" class="{{ 'active' if (page is defined and page == 'certifications') else '' }}">Certifications</a>
+      <a href="{{ url_for('portfolio.contact') }}" class="{{ 'active' if (page is defined and page == 'contact') else '' }}">Contact</a>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode"><i class="fa-solid fa-moon"></i></button>
+      <button class="hamburger" id="hamburger" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="{{ url_for('portfolio.about') }}">About</a>
+    <a href="{{ url_for('portfolio.skills') }}">Skills</a>
+    <a href="{{ url_for('portfolio.education') }}">Education</a>
+    <a href="{{ url_for('portfolio.projects') }}">Projects</a>
+    <a href="{{ url_for('portfolio.certifications') }}">Certifications</a>
+    <a href="{{ url_for('portfolio.contact') }}">Contact</a>
+  </div>
+</header>
+{% endblock %}
+
+{% block content %}{% endblock %}
+
+{% block footer %}
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-logo">Tamilarasan<span>.</span>S</div>
+      <div class="social-icons">
+        <a href="mailto:{{ (profile.email if profile is defined else None) or 'tamilarasansankar111@gmail.com' }}" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
+        {% if social_links is defined %}
+          {% for link in social_links %}
+          <a href="{{ link.url }}" target="_blank" aria-label="{{ link.platform }}"><i class="{{ link.icon }}"></i></a>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> Tamilarasan S. All rights reserved.</span>
+      <span style="display:flex;align-items:center;gap:18px;">
+        Designed &amp; built for campus placements.
+        {% if is_admin is defined and is_admin %}
+          <a href="{{ url_for('admin.dashboard') }}" class="admin-trigger"><i class="fa-solid fa-user-shield"></i> Admin Panel</a>
+          <a href="{{ url_for('auth.logout') }}" class="admin-trigger"><i class="fa-solid fa-right-from-bracket"></i> Log Out</a>
+        {% else %}
+          <a href="{{ url_for('auth.login') }}" class="admin-trigger"><i class="fa-solid fa-lock"></i> Admin</a>
+        {% endif %}
+      </span>
+    </div>
+  </div>
+</footer>
+{% endblock %}
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>
